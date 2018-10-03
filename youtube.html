@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        {{ message }}
+
+        <div v-for="item in items">
+            <iframe width="560" height="315" :src="src(item.snippet.resourceId.videoId)" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                message: 'Hello world',
+                items: []
+            },
+            methods: {
+                getUserFeed() {
+                    axios.get(`https://www.googleapis.com/youtube/v3/playlistItems`, {
+                        params: {
+                            key: 'AIzaSyD1mU6kSx0t90jhaRfEKNJ6EMThncHmeDY',
+                            part: 'snippet',
+                            playlistId: 'LLd59l7wqS_FssF9TbrpL2Qg',
+                            maxResults: 5,
+                        }
+                    })
+                    .then(res => {
+                        console.log(res.data)
+                        console.log(res.data.items)
+                        console.log(this.items)
+
+                        this.items = res.data.items
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
+                },
+                src(id) {
+                    return `https://www.youtube.com/embed/${id}`
+                }
+            },
+            created() {
+                this.getUserFeed()
+            }
+        })
+    </script>
+</body>
+</html>
